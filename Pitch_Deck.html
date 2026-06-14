@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Delhivery Graph Intelligence - Pitch Deck</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.5.0/reveal.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.5.0/theme/night.min.css">
+  <style>
+    .reveal h1, .reveal h2, .reveal h3 {
+      text-transform: none;
+      font-weight: 600;
+    }
+    .highlight {
+      color: #ff4b4b;
+    }
+    .chart-container {
+      background: white;
+      padding: 10px;
+      border-radius: 8px;
+      display: inline-block;
+    }
+    img.chart {
+      max-height: 400px !important;
+      margin: 0 !important;
+      border: none !important;
+      box-shadow: none !important;
+    }
+    .stats-box {
+      display: flex;
+      justify-content: space-around;
+      margin-top: 30px;
+    }
+    .stat {
+      background: rgba(255,255,255,0.1);
+      padding: 20px;
+      border-radius: 10px;
+      border-top: 4px solid #ff4b4b;
+    }
+    .stat-val {
+      font-size: 2em;
+      font-weight: bold;
+      color: #ff4b4b;
+    }
+  </style>
+</head>
+<body>
+  <div class="reveal">
+    <div class="slides">
+
+      <!-- Slide 1: Title -->
+      <section>
+        <h1 style="color: #ff4b4b; font-size: 2.5em;">Delhivery Graph Intelligence</h1>
+        <h3>Predicting Delays & Identifying Structural Bottlenecks</h3>
+        <p style="margin-top: 50px;">Prepared by the Data Science Team</p>
+      </section>
+
+      <!-- Slide 2: The Problem -->
+      <section>
+        <h2>The Strategic <span class="highlight">Challenge</span></h2>
+        <p style="text-align: left; font-size: 0.9em; line-height: 1.5;">
+          Delhivery uses OSRM (shortest path) to estimate delivery times. However, real-world logistics is messy. Facility dwell times, node congestion, and route profiles cause actual delivery times to deviate significantly.<br><br>
+          <strong>The Result:</strong> A 95%+ SLA Breach Rate on specific chronic routes, leading to unhappy customers and broken capacity planning.
+        </p>
+      </section>
+
+      <!-- Slide 3: The Solution -->
+      <section>
+        <h2>Our <span class="highlight">Graph-Based</span> Solution</h2>
+        <p>We modeled the logistics network not as isolated trips, but as a living <strong>Directed Graph</strong>.</p>
+        <div class="stats-box">
+          <div class="stat">
+            <div class="stat-val">1,657</div>
+            <div>Facilities (Nodes)</div>
+          </div>
+          <div class="stat">
+            <div class="stat-val">2,783</div>
+            <div>Corridors (Edges)</div>
+          </div>
+          <div class="stat">
+            <div class="stat-val">2,617</div>
+            <div>Chronic Delay Corridors</div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Slide 4: Network Map -->
+      <section>
+        <h2>Mapping the <span class="highlight">Bottlenecks</span></h2>
+        <div class="chart-container">
+          <img class="chart" src="outputs/figures/network_bottleneck.png" alt="Network Map">
+        </div>
+        <p style="font-size: 0.6em;">Node Size = Betweenness Centrality | Red Edges = Chronic Delay Corridors</p>
+      </section>
+
+      <!-- Slide 5: Top 5 Hubs -->
+      <section>
+        <h2>The Top 5 <span class="highlight">Critical Hubs</span></h2>
+        <p style="font-size: 0.8em;">Based on our normalized <strong>Bottleneck Priority Score</strong>, these 5 facilities cause the most structural damage to the network:</p>
+        <div class="chart-container" style="margin-top: 20px;">
+          <img class="chart" src="outputs/figures/top_hubs.png" alt="Top Hubs" style="max-height: 350px !important;">
+        </div>
+      </section>
+
+      <!-- Slide 6: ML ETA Models -->
+      <section>
+        <h2>Smarter ETAs via <span class="highlight">Node2Vec</span></h2>
+        <p style="font-size: 0.8em; text-align: left;">
+          We trained two XGBoost regressors to predict true delivery times. The first used standard baseline features (OSRM). The second injected <strong>Graph Embeddings</strong> and <strong>Hub Centrality Metrics</strong>.
+        </p>
+        <div class="chart-container" style="margin-top: 20px;">
+          <img class="chart" src="outputs/figures/model_comparison.png" alt="Model Comparison" style="max-height: 300px !important;">
+        </div>
+        <h4 style="color: #4CAF50; margin-top: 10px;">Result: +8.57% improvement in 15%-Accuracy</h4>
+      </section>
+
+      <!-- Slide 7: FTL Optimization -->
+      <section>
+        <h2><span class="highlight">FTL vs Carting</span> Framework</h2>
+        <p style="font-size: 0.8em;">We built an ML classifier to dictate route types based on corridor risk profiles. Long-haul corridors through high-betweenness hubs show <strong>~15-20% variance reduction</strong> when shifted to FTL.</p>
+        <div class="chart-container" style="margin-top: 10px;">
+          <img class="chart" src="outputs/figures/ftl_decision_boundary.png" alt="FTL Decision Boundary" style="max-height: 350px !important;">
+        </div>
+      </section>
+
+      <!-- Slide 8: Business Value -->
+      <section>
+        <h2>Strategic <span class="highlight">Recommendations</span></h2>
+        <ul style="font-size: 0.8em; line-height: 1.8;">
+          <li><strong>Infrastructure:</strong> Upgrade capacity at <em>Gurgaon Bilaspur HB</em> and <em>Bangalore Nelmngla</em>. These single points of failure create massive ripple effects.</li>
+          <li><strong>Financial Impact:</strong> Upgrading the top 3 bottleneck hubs to the network median delay ratio recovers an estimated <strong>₹1.05 Crore</strong> in revenue at risk.</li>
+          <li><strong>Deployment:</strong> Integrate the Graph-Enhanced XGBoost model into the customer-facing tracking app to drastically improve transparency.</li>
+        </ul>
+      </section>
+
+      <!-- Slide 9: Thank You -->
+      <section>
+        <h1 class="highlight">Thank You</h1>
+        <p>Explore the Live Interactive Dashboard:</p>
+        <p><a href="https://delhivery-graph-intelligence-system.streamlit.app" target="_blank" style="color: white; text-decoration: underline;">delhivery-graph-intelligence-system.streamlit.app</a></p>
+      </section>
+
+    </div>
+  </div>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.5.0/reveal.min.js"></script>
+  <script>
+    Reveal.initialize({
+      hash: true,
+      transition: 'fade',
+      controlsTutorial: false
+    });
+  </script>
+</body>
+</html>
