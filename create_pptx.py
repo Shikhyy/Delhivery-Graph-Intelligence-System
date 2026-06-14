@@ -41,7 +41,7 @@ subtitle.text_frame.paragraphs[0].font.size = Pt(22)
 
 # Add truck doodle to title slide
 img_path = "outputs/figures/doodle_truck.png"
-slide.shapes.add_picture(img_path, Inches(3.5), Inches(4.5), height=Inches(2.5))
+slide.shapes.add_picture(img_path, Inches(4.0), Inches(5.2), height=Inches(1.8))
 
 def add_title(slide, text):
     title = slide.shapes.title
