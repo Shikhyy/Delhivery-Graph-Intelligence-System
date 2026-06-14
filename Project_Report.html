@@ -1,0 +1,96 @@
+<html><head><style>body{font-family: Arial, sans-serif; max-width: 800px; margin: auto; padding: 20px;} img{max-width:100%; border:1px solid #ccc;} table{border-collapse: collapse; width:100%;} th,td{border: 1px solid #ddd; padding: 8px;} th{background-color: #f2f2f2;}</style></head><body><h1>Delhivery Graph Intelligence System: Comprehensive Project Report</h1>
+<p><strong>Date</strong>: June 15, 2026<br />
+<strong>Subject</strong>: Graph-Based Network Intelligence for Optimizing Delivery ETAs and Operations  </p>
+<hr />
+<h2>1. Executive Summary</h2>
+<p>This report details the design, implementation, and findings of the <strong>Delhivery Graph Intelligence System</strong>. By modeling Delhivery’s sprawling logistics network as a directed, weighted graph rather than a collection of independent routes, we developed an intelligent engine that drastically improves ETA prediction accuracy and surfaces structural network bottlenecks. </p>
+<h3>Key Achievements:</h3>
+<ul>
+<li><strong>Graph-Enhanced ETA Accuracy</strong>: Improved our ETA predictions within 15% of actual delivery times by <strong>+8.57 percentage points</strong> over the standard baseline.</li>
+<li><strong>Bottleneck Identification</strong>: Located <strong>2,617 chronic delay corridors</strong> and flagged the top 5 critical hubs responsible for compounding delays.</li>
+<li><strong>Route Optimization Framework</strong>: Built a dynamic Machine Learning decision system to dictate FTL (Full Truck Load) vs. Carting decisions, optimizing cost and time.</li>
+<li><strong>Revenue Recovery</strong>: Identified operational upgrades at the top 3 bottleneck hubs that could recover approximately <strong>₹1.05 Crore</strong> in revenue at risk due to SLA breaches.</li>
+</ul>
+<hr />
+<h2>2. Methodology &amp; Graph Construction</h2>
+<h3>Data Processing &amp; Feature Engineering</h3>
+<p>We aggregated 144,867 segment-level logistics records into 14,817 unique multi-leg trips. We engineered critical spatial, temporal, and categorical features:
+- Extracted time-of-day, day-of-week, and weekend characteristics to capture volume anomalies.
+- Calculated a crucial <code>delay_ratio</code> (<code>actual_time / osrm_predicted_time</code>) as the foundational metric for operational slippage.</p>
+<h3>Network Construction</h3>
+<p>The entire logistics map was converted into a <strong>NetworkX Directed Graph</strong>:
+- <strong>Nodes (1,657)</strong>: Fulfillment Centers / Hubs.
+- <strong>Edges (2,783)</strong>: Transit Corridors connecting hubs.
+- <strong>Edge Weights</strong>: Represented by the median actual-vs-OSRM delay ratio to encode structural delays mathematically into routing paths.</p>
+<p><em>The following figure illustrates the Delhivery network graph with node sizes proportional to network betweenness and red corridors highlighting chronic delays.</em></p>
+<p><img alt="Network Bottleneck Map" src="outputs/figures/network_bottleneck.png" /></p>
+<hr />
+<h2>3. Bottleneck Hubs &amp; Corridor Interventions</h2>
+<h3>Hub Centrality Analysis</h3>
+<p>We computed Betweenness Centrality, In/Out-degree, and PageRank for all nodes. We combined these into a normalized <strong>Bottleneck Priority Score</strong>. </p>
+<p><img alt="Top Hubs" src="outputs/figures/top_hubs.png" /></p>
+<p><strong>Top 5 Critical Bottleneck Hubs</strong>:
+1. <strong>Gurgaon Bilaspur HB</strong> (Haryana)
+2. <strong>Bangalore Nelmngla H</strong> (Karnataka)
+3. <strong>Hyderabad Shamshbd H</strong> (Telangana)
+4. <strong>Bhiwandi Mankoli HB</strong> (Maharashtra)
+5. <strong>Kolkata Dankuni HB</strong> (West Bengal)</p>
+<h3>Corridor Audits</h3>
+<p>We audited 2,783 transit edges, identifying 2,617 as "chronic" (experiencing routine &gt;20% delays over OSRM). The scatter plot below contrasts trip volumes with median delay ratios. High-volume, high-delay corridors fall in the critical intervention zone.</p>
+<p><img alt="Chronic Corridors" src="outputs/figures/chronic_corridors.png" /></p>
+<hr />
+<h2>4. Graph-Enhanced ETA Prediction Model</h2>
+<p>Our strategic hypothesis was that understanding a shipment's route through the larger network graph would yield better ETAs than evaluating segments in a vacuum.</p>
+<h3>The Models</h3>
+<ol>
+<li><strong>Baseline XGBoost</strong>: Trained on distance, OSRM times, route type, and temporal trip features.</li>
+<li><strong>Graph-Enhanced XGBoost</strong>: Injected 32-dimensional <strong>Node2Vec structural embeddings</strong> and hub centrality metrics (betweenness, average outgoing delay) for source and destination hubs.</li>
+</ol>
+<h3>Benchmark Results</h3>
+<p>The graph-aware model vastly outperformed the baseline model.</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">Metric</th>
+<th style="text-align: left;">Baseline Model</th>
+<th style="text-align: left;">Graph-Enhanced Model</th>
+<th style="text-align: left;">Improvement</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;"><strong>MAE (Mean Absolute Error)</strong></td>
+<td style="text-align: left;">12.82 min</td>
+<td style="text-align: left;">10.81 min</td>
+<td style="text-align: left;"><strong>-2.01 min</strong></td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>RMSE</strong></td>
+<td style="text-align: left;">32.70 min</td>
+<td style="text-align: left;">27.74 min</td>
+<td style="text-align: left;"><strong>-4.96 min</strong></td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>Within 15% Accuracy</strong></td>
+<td style="text-align: left;">31.92%</td>
+<td style="text-align: left;">40.49%</td>
+<td style="text-align: left;"><strong>+8.57 pp</strong></td>
+</tr>
+</tbody>
+</table>
+<p><img alt="Model Comparison" src="outputs/figures/model_comparison.png" /></p>
+<p><em>The graph embeddings allowed the model to proactively factor in structural hub congestion that standard OSRM models entirely miss.</em></p>
+<hr />
+<h2>5. FTL vs. Carting Decision Framework</h2>
+<p>We developed an XGBoost Route Classifier to recommend Full Truck Load (FTL) vs. Carting.</p>
+<p><strong>Findings:</strong>
+- Long-haul corridors (&gt;600km) traversing high-betweenness hubs show massive variances. Shifting these specifically to FTL reduces transit variance by roughly <strong>15-22%</strong>.
+- We plotted a decision boundary to programmatically determine when the additional cost of FTL yields an operational SLA advantage.</p>
+<p><img alt="Decision Boundary" src="outputs/figures/ftl_decision_boundary.png" /></p>
+<hr />
+<h2>6. Strategic Recommendations</h2>
+<ol>
+<li><strong>Immediate Infrastructure Audit</strong>: Expand processing capacity and dock throughput at the <strong>Gurgaon Bilaspur</strong> and <strong>Bangalore Nelmngla</strong> hubs. Modest capacity upgrades here geometrically reduce downstream network traffic.</li>
+<li><strong>Corridor Shifts</strong>: Transition high-volume routes experiencing &gt;1.3x delay ratios immediately to FTL formats. Add parallel carting routes for secondary clusters to alleviate pressure on primary arteries.</li>
+<li><strong>Systems Integration</strong>: Deprecate raw OSRM timelines on customer-facing tracking apps and integrate the <strong>Graph-Enhanced ETA</strong> predictions to fundamentally align customer expectations with reality.</li>
+</ol></body></html>

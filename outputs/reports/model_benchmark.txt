@@ -1,0 +1,4 @@
+         Model  MAE (min)  RMSE (min) Within 15% accuracy
+      Baseline  12.822943   32.700092              31.92%
+Graph-Enhanced  10.809272   27.743498              40.49%
+   Improvement  -2.013671   -4.956594            +8.57 pp

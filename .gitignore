@@ -21,9 +21,9 @@ wheels/
 *.egg-info/
 
 # Data and Artifacts
-data/delivery_data.csv
-outputs/
-strategy_memo.md
+# data/delivery_data.csv
+# outputs/
+# strategy_memo.md
 
 # IDEs
 .vscode/

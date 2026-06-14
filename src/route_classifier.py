@@ -60,7 +60,6 @@ def build_ftl_carting_framework(df_trip: pd.DataFrame, metrics: pd.DataFrame, G:
         max_depth=5,
         learning_rate=0.05,
         random_state=RANDOM_STATE,
-        use_label_encoder=False,
         eval_metric='logloss'
     )
     
@@ -98,7 +97,7 @@ def build_ftl_carting_framework(df_trip: pd.DataFrame, metrics: pd.DataFrame, G:
                                  bins=[0, 100, 300, 600, 10000],
                                  labels=['0–100 km', '100–300 km', '300–600 km', '600+ km'])
     
-    decision_boundary = test_df.groupby(['dist_band', 'time_of_day']).agg(
+    decision_boundary = test_df.groupby(['dist_band', 'time_of_day'], observed=False).agg(
         recommendation=('predicted_ftl', lambda x: 'FTL' if x.mean() > 0.5 else 'Carting'),
         avg_saving_pct=('delay_ratio_mean', lambda x: (x[test_df['route_type'] == 'Carting'].mean() - x[test_df['route_type'] == 'FTL'].mean()) / x.mean() if not x.empty else 0)
     ).reset_index()

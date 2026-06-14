@@ -195,7 +195,7 @@ def run_hypothesis_tests(df: pd.DataFrame) -> Dict:
     results['ftl_vs_carting_delay'] = {'p_value': p, 'interpretation': "Route type affects delay" if p < 0.05 else "No significant difference"}
 
     # 4. delay_ratio by time_of_day (using Kruskal-Wallis for >2 groups)
-    groups = [group['delay_ratio'].values for name, group in df.groupby('time_of_day')]
+    groups = [group['delay_ratio'].values for name, group in df.groupby('time_of_day', observed=True)]
     stat, p = stats.kruskal(*groups)
     results['time_of_day_delay'] = {'p_value': p, 'interpretation': "Time of day affects delay" if p < 0.05 else "No significant difference"}
 

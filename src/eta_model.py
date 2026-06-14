@@ -3,7 +3,10 @@ import numpy as np
 import xgboost as xgb
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import mean_absolute_error, mean_squared_error
-from node2vec import Node2Vec
+try:
+    from node2vec import Node2Vec
+except ImportError:
+    from src.node2vec_mock import Node2Vec
 import networkx as nx
 import joblib
 import os

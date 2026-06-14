@@ -1,0 +1,17 @@
+dist_band,time_of_day,recommendation,avg_saving_pct
+0–100 km,afternoon,Carting,0.25518041561619137
+0–100 km,evening,Carting,-0.0060374226601249865
+0–100 km,late_night,Carting,0.2741501479601401
+0–100 km,morning,Carting,0.24659612129514671
+100–300 km,afternoon,FTL,0.4295684155624706
+100–300 km,evening,FTL,0.15
+100–300 km,late_night,FTL,0.15
+100–300 km,morning,FTL,0.15
+300–600 km,afternoon,Carting,0.0
+300–600 km,evening,Carting,0.0
+300–600 km,late_night,Carting,0.0
+300–600 km,morning,Carting,0.0
+600+ km,afternoon,Carting,0.0
+600+ km,evening,Carting,0.0
+600+ km,late_night,FTL,0.15
+600+ km,morning,Carting,0.0
